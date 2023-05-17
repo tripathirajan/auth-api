@@ -1,0 +1,10 @@
+{
+  "name": "@tripathirajan/auth-api",
+  "version": "1.0.0-beta",
+  "description": "auth api provide complete auth module",
+  "main": "dist/index.js",
+  "repository": "https://github.com/tripathirajan/auth-api.git",
+  "author": "Rajan Tripathi <tripathirajan3@gmail.com>",
+  "license": "ISC",
+  "private": false
+}
