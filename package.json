@@ -3,8 +3,40 @@
   "version": "1.0.0-beta",
   "description": "auth api provide complete auth module",
   "main": "dist/index.js",
-  "repository": "https://github.com/tripathirajan/auth-api.git",
+  "types": "dist/index.d.ts",
   "author": "Rajan Tripathi <tripathirajan3@gmail.com>",
   "license": "ISC",
-  "private": false
+  "private": false,
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "prebuild": "npm run lint && npm run format",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
+    "format": "prettier --write \"lib/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json --fix",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A lib",
+    "postversion": "git push && git push --tags",
+    "format:fix": "npm run lint && npm run format"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tripathirajan/auth-api.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "bugs": {
+    "url": "https://github.com/tripathirajan/auth-api/issues",
+    "email": "tripathirajan3@gmail.com"
+  },
+  "homepage": "https://github.com/tripathirajan/auth-api.git#readme",
+  "dependencies": {
+    "mongoose": "^7.1.1"
+  }
 }
