@@ -73,7 +73,7 @@ export const register = asyncAuthControllerHandler(async (data: ControllerPayloa
 /**
  * refresh token
  */
-export const refreshToken = asyncControllerHandler(async (data: ControllerPayload): Promise<IHttpResponse> => {
+export const checkSession = asyncControllerHandler(async (data: ControllerPayload): Promise<IHttpResponse> => {
   const { cookies } = data;
   const refreshToken = cookies && cookies[REFRESH_TOKEN_COOKIE_NAME];
   if (!refreshToken) return new Unauthorized('Unauthorized');
@@ -142,7 +142,7 @@ export const resetPassword = asyncControllerHandler(async (data: ControllerPaylo
     user = await getUserById(new Types.ObjectId(resetPassToken.user));
   }
   if (!user || user === null) return new Unauthorized('Invalid token');
-  await updateUserInfo(user._id, { password: password }, user._id);
+  await updateUserInfo(user._id, { password }, user._id);
   await Token.deleteMany({ user: user._id, type: TokenType.RESET_PASSWORD });
   return new Success('Success', {});
 });

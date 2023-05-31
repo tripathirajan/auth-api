@@ -159,10 +159,10 @@ export const asyncAuthControllerHandler = (func: ControllerFun) =>
       } = response?.data?.tokens as AccessAndRefreshTokens;
       if (token && expires) {
         res.cookie(REFRESH_TOKEN_COOKIE_NAME, token, {
-          httpOnly: true, //accessible only by web server
-          secure: true, //https
-          sameSite: 'none', //cross-site cookie
-          expires, //7 * 24 * 60 * 60 * 1000 //cookie expiry: set to match rT
+          httpOnly: true, // accessible only by web server
+          secure: true, // https
+          sameSite: 'none', // cross-site cookie
+          expires, // 7 * 24 * 60 * 60 * 1000 //cookie expiry: set to match rT
         });
         delete response?.data?.tokens?.refresh;
       }
