@@ -38,7 +38,7 @@
   "homepage": "https://github.com/tripathirajan/auth-api.git#readme",
   "dependencies": {
     "@tripathirajan/crypto-service": "^1.0.0",
-    "@tripathirajan/mail-service": "^1.0.1",
+    "@tripathirajan/mail-service": "^1.0.2",
     "dayjs": "^1.11.7",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.1"
