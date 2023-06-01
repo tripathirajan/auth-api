@@ -26,12 +26,6 @@ import { MailServiceManager } from '@tripathirajan/mail-service';
 import { resetPasswordTemplate } from './email-templates';
 import Token from '../token/token.model';
 
-if (process.env.RESET_PASSWORD_URL === undefined) {
-  throw new Error('Add RESET_PASSWORD_URL to .env');
-}
-if (process.env.MAIL_SENT_FROM === undefined) {
-  throw new Error('Add MAIL_SENT_FROM to .env');
-}
 /**
  * login user
  */
@@ -113,6 +107,9 @@ export const forgotPassword = asyncControllerHandler(async (data: ControllerPayl
 
   const resetPasswordToken = await generateResetPasswordToken(user.email);
   if (!resetPasswordToken) return new InternalServerError('Unable to generate reset password token');
+  if (process.env.RESET_PASSWORD_URL === undefined) {
+    throw new Error('Add RESET_PASSWORD_URL to .env');
+  }
   const resetURL = `${process.env.RESET_PASSWORD_URL}?token=${resetPasswordToken}`;
   // send reset link to email
   const emailAgent = MailServiceManager.getInstance();
