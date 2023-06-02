@@ -167,5 +167,5 @@ export const asyncAuthControllerHandler = (func: ControllerFun) =>
         delete response?.data?.tokens?.refresh;
       }
     }
-    return res.send(response.status).json(response.toJson());
+    return res.status(response.status).json(response);
   });
