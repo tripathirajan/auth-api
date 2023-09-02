@@ -6,7 +6,7 @@ export type APIResult = {
   data: Result;
   message: string;
   success: boolean;
-}
+};
 export interface IHttpResponse extends APIResult {
   readonly status: HttpStatus;
   toJson(): string;

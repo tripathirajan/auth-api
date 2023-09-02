@@ -1,6 +1,6 @@
 {
   "name": "@tripathirajan/auth-api",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "auth api provide complete auth module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,13 +9,13 @@
   "private": false,
   "scripts": {
     "test": "jest --config jestconfig.json",
-    "prebuild": "npm run lint && npm run format",
+    "prebuild": "npm run lint && npm run format && npm run test",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "format": "prettier --write \"lib/**/*.ts\"",
     "lint": "tslint -p tsconfig.json --fix",
-    "prepublishOnly": "npm test && npm run lint",
+    "prepublishOnly": "npm run build",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A lib",
     "postversion": "git push && git push --tags",

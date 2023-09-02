@@ -65,7 +65,7 @@ class BaseAPIResult implements IHttpResponse {
       data: this.data,
       message: this.message,
       success: this.success,
-    }
+    };
   }
 }
 
