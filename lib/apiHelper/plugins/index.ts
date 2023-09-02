@@ -141,7 +141,7 @@ export const asyncControllerHandler = (func: ControllerFun) =>
   asyncHandler(async (req: Request, res: Response) => {
     const { loggedInUserId, query, body, params, cookies } = req as any;
     const response = (await func({ query, body, params, loggedInUserId, cookies })) as IHttpResponse;
-    return res.status(response.status).json(response.toJson());
+    return res.status(response.status).json(response.getResult());
   });
 
 /**
@@ -167,5 +167,5 @@ export const asyncAuthControllerHandler = (func: ControllerFun) =>
         delete response?.data?.tokens?.refresh;
       }
     }
-    return res.status(response.status).json(response);
+    return res.status(response.status).json(response.getResult());
   });

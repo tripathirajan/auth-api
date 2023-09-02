@@ -1,5 +1,5 @@
 import { HttpStatus } from '../enums';
-import { IHttpResponse } from '../types';
+import { IHttpResponse, Result, APIResult } from '../types';
 
 /**
  * Base api result
@@ -31,7 +31,7 @@ class BaseAPIResult implements IHttpResponse {
    * @param message
    * @param [data]
    */
-  constructor(status: HttpStatus, message: string, data: any | any[] = {}) {
+  constructor(status: HttpStatus, message: string, data: Result) {
     this.status = status;
     this.message = message;
     this.data = data;
@@ -48,6 +48,24 @@ class BaseAPIResult implements IHttpResponse {
       message: this.message,
       success: this.success,
     });
+  }
+  /**
+   * return http status code
+   * @returns {HttpStatus} status
+   */
+  public getStatus(): HttpStatus {
+    return this.status;
+  }
+  /**
+   * get api result payload
+   * @returns {APIResult} result
+   */
+  public getResult(): APIResult {
+    return {
+      data: this.data,
+      message: this.message,
+      success: this.success,
+    }
   }
 }
 
