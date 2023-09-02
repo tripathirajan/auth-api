@@ -141,7 +141,7 @@ export const asyncControllerHandler = (func: ControllerFun) =>
   asyncHandler(async (req: Request, res: Response) => {
     const { loggedInUserId, query, body, params, cookies } = req as any;
     const response = (await func({ query, body, params, loggedInUserId, cookies })) as IHttpResponse;
-    return res.send(response.status).json(response.toJson());
+    return res.status(response.status).json(response.toJson());
   });
 
 /**
