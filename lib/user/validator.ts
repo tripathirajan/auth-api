@@ -47,7 +47,7 @@ export const validateNewUserData = async (userData: NewCreatedUser): Promise<Val
     };
     return toReturn;
   }
-  if (!lastName || [...middleName].length <= 2 || [...middleName].length >= 100) {
+  if (!lastName || [...lastName].length <= 2 || [...lastName].length >= 100) {
     toReturn = {
       isValid: false,
       error: 'Last name is required and must be at least 2 and max 100 characters long',
