@@ -11,7 +11,7 @@ export interface IToken {
   token: string;
   user: string;
   type: string;
-  expires: Date;
+  expiresIn: string;
   blacklisted: boolean;
 }
 
@@ -24,13 +24,12 @@ export interface ITokenModel extends Model<ITokenDoc> {}
 export interface IPayload extends JwtPayload {
   sub: string;
   iat: number;
-  exp: number;
   type: string;
 }
 
 export interface TokenPayload {
   token: string;
-  expires: Date;
+  expiresIn: string;
 }
 
 export interface AccessAndRefreshTokens {

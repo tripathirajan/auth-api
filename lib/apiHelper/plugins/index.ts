@@ -4,7 +4,9 @@ import { QueryFilter, QueryResult } from '../filters/types';
 import { ControllerFun, IHttpResponse } from '../response/types';
 import { HttpStatus } from '../response';
 import { AccessAndRefreshTokens } from '../../token';
-import { REFRESH_TOKEN_COOKIE_NAME } from '../constants';
+import { PATTERN_ALPHA, PATTERN_NUMBER, REFRESH_TOKEN_COOKIE_NAME } from '../constants';
+import dayjs,{ManipulateType} from 'dayjs';
+
 
 /**
  *
@@ -155,14 +157,16 @@ export const asyncAuthControllerHandler = (func: ControllerFun) =>
     const response = (await func({ query, body, params, loggedInUserId, cookies })) as IHttpResponse;
     if (response.status === HttpStatus.OK) {
       const {
-        refresh: { token, expires },
+        refresh: { token, expiresIn },
       } = response?.data?.tokens as AccessAndRefreshTokens;
-      if (token && expires) {
+      if (token && expiresIn) {
+        const unitData: ManipulateType = (expiresIn.toString().match(PATTERN_ALPHA) || 'd') as ManipulateType;
+        const amountData:number = parseInt((expiresIn.toString().match(PATTERN_NUMBER) || '7').toString(), 10);
         res.cookie(REFRESH_TOKEN_COOKIE_NAME, token, {
           httpOnly: true, // accessible only by web server
           secure: true, // https
           sameSite: 'none', // cross-site cookie
-          expires, // 7 * 24 * 60 * 60 * 1000 //cookie expiry: set to match rT
+          expires: new Date(dayjs().add(amountData, unitData).toString()) // 7 * 24 * 60 * 60 * 1000 //cookie expiry: set to match rT
         });
         delete response?.data?.tokens?.refresh;
       }

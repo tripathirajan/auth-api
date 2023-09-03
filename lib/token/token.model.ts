@@ -22,8 +22,8 @@ const tokenSchema = new Schema<ITokenDoc, ITokenModel>(
       required: true,
       default: TokenType.REFRESH,
     },
-    expires: {
-      type: Date,
+    expiresIn: {
+      type: String,
       required: true,
     },
     blacklisted: {
