@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { AccessAndRefreshTokens, ITokenDoc, TokenType } from './token.types';
 import Token from './token.model';
 import { IUserDocument, ValidationResult, getUserByEmail } from '../user';
-import dayjs, { Dayjs } from 'dayjs';
 
 /**
  * generate token
@@ -12,17 +11,16 @@ import dayjs, { Dayjs } from 'dayjs';
  * @param type
  * @returns
  */
-export const generateToken = (userId: mongoose.Types.ObjectId, expires: Dayjs, type: string) => {
+export const generateToken = (userId: mongoose.Types.ObjectId, expiresIn: string, type: string) => {
   if (!process.env.TOKEN_SECRET) {
     throw new Error(' Please add TOKEN_SECRET in .env');
   }
   const payload = {
     sub: userId,
     iat: new Date().getTime(),
-    exp: expires.toDate(),
     type,
   };
-  return jwt.sign(payload, process.env.TOKEN_SECRET);
+  return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn });
 };
 /**
  * add new token
@@ -36,14 +34,14 @@ export const generateToken = (userId: mongoose.Types.ObjectId, expires: Dayjs, t
 export const addNewToken = async (
   token: string,
   userId: mongoose.Types.ObjectId,
-  expires: Dayjs,
+  expiresIn: string,
   type: string,
   blacklisted: boolean = false,
 ): Promise<ITokenDoc> => {
   const tokenDoc = await Token.create({
     token,
     user: userId,
-    expires: expires.toDate(),
+    expiresIn,
     type,
     blacklisted,
   });
@@ -88,21 +86,21 @@ export const generateAuthTokens = async (user: IUserDocument): Promise<AccessAnd
   if (!process.env.REFRESH_TOKEN_EXPIRE_IN) {
     throw new Error('REFRESH_TOKEN_EXPIRE_IN is not set');
   }
-  const accessTokenExpires = dayjs().add(parseInt(process.env.ACCESS_TOKEN_EXPIRE_IN, 10) || 10, 'minute');
+  const accessTokenExpires = process.env.ACCESS_TOKEN_EXPIRE_IN || '1h';
   const accessToken = generateToken(user.id, accessTokenExpires, TokenType.ACCESS);
 
-  const refreshTokenExpires = dayjs().add(parseInt(process.env.REFRESH_TOKEN_EXPIRE_IN, 10) || 7, 'day');
+  const refreshTokenExpires = process.env.REFRESH_TOKEN_EXPIRE_IN || '7d';
   const refreshToken = generateToken(user.id, refreshTokenExpires, TokenType.REFRESH);
   await addNewToken(refreshToken, user.id, refreshTokenExpires, TokenType.REFRESH);
 
   return {
     access: {
       token: accessToken,
-      expires: accessTokenExpires.toDate(),
+      expiresIn: accessTokenExpires,
     },
     refresh: {
       token: refreshToken,
-      expires: refreshTokenExpires.toDate(),
+      expiresIn: refreshTokenExpires,
     },
   };
 };
@@ -120,7 +118,7 @@ export const generateResetPasswordToken = async (email: string): Promise<string 
   if (!user) {
     return { isValid: false, error: 'User not found' } as ValidationResult;
   }
-  const expires = dayjs().add(parseInt(process.env.RESET_PASSWORD_TOKEN_EXPIRE_IN, 10), 'minute');
+  const expires = process.env.RESET_PASSWORD_TOKEN_EXPIRE_IN || '5m';
   const resetPasswordToken = generateToken(user.id, expires, TokenType.RESET_PASSWORD);
   await addNewToken(resetPasswordToken, user.id, expires, TokenType.RESET_PASSWORD);
   return resetPasswordToken;
@@ -135,7 +133,7 @@ export const generateVerifyEmailToken = async (user: IUserDocument): Promise<str
   if (!process.env.VERIFY_EMAIL_TOKEN_EXPIRE_IN) {
     throw new Error('VERIFY_EMAIL_TOKEN_EXPIRE_IN is not set');
   }
-  const expires = dayjs().add(parseInt(process.env.VERIFY_EMAIL_TOKEN_EXPIRE_IN, 10), 'minutes');
+  const expires = process.env.VERIFY_EMAIL_TOKEN_EXPIRE_IN || '5m';
   const verifyEmailToken = generateToken(user.id, expires, TokenType.VERIFY_EMAIL);
   await addNewToken(verifyEmailToken, user.id, expires, TokenType.VERIFY_EMAIL);
   return verifyEmailToken;
